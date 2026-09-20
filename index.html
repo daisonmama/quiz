@@ -1,0 +1,431 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>漢字ドリル クイズ</title>
+  <style>
+    :root {
+      --primary-color: #4a90e2;
+      --secondary-color: #50e3c2;
+      --accent-color: #e74c3c;
+      --bg-color: #f4f6f9;
+      --card-bg: #ffffff;
+      --text-color: #333333;
+    }
+    body {
+      font-family: 'Helvetica Neue', Arial, 'Hiragino Kaku Gothic ProN', 'Hiragino Sans', Meiryo, sans-serif;
+      background-color: var(--bg-color);
+      color: var(--text-color);
+      margin: 0;
+      padding: 0;
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+    }
+    header {
+      background-color: var(--primary-color);
+      color: white;
+      padding: 15px 20px;
+      text-align: center;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    h1 {
+      margin: 0;
+      font-size: 1.2rem;
+    }
+    .container {
+      max-width: 600px;
+      margin: 0 auto;
+      padding: 20px;
+      flex: 1;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .card {
+      background-color: var(--card-bg);
+      border-radius: 12px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.05);
+    }
+    .form-group {
+      margin-bottom: 15px;
+    }
+    label {
+      display: block;
+      margin-bottom: 5px;
+      font-weight: bold;
+      font-size: 0.9rem;
+    }
+    select, input[type="text"] {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 1rem;
+      box-sizing: border-box;
+    }
+    .btn {
+      display: inline-block;
+      width: 100%;
+      padding: 12px;
+      background-color: var(--primary-color);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 1rem;
+      font-weight: bold;
+      cursor: pointer;
+      text-align: center;
+      transition: background-color 0.2s;
+    }
+    .btn:active {
+      background-color: #357abd;
+    }
+    .btn-secondary {
+      background-color: #6c757d;
+      margin-top: 10px;
+    }
+    .btn-danger {
+      background-color: var(--accent-color);
+    }
+    .question-box {
+      font-size: 1.2rem;
+      margin-bottom: 20px;
+      line-height: 1.6;
+    }
+    .ruby {
+      font-size: 0.8rem;
+      color: #666;
+    }
+    .badge {
+      display: inline-block;
+      padding: 3px 8px;
+      border-radius: 12px;
+      font-size: 0.8rem;
+      color: white;
+      margin-bottom: 10px;
+    }
+    .badge-info { background-color: #17a2b8; }
+    .badge-warning { background-color: #ffc107; color: #333; }
+    .badge-danger { background-color: var(--accent-color); }
+
+    .result-msg {
+      font-size: 1.2rem;
+      font-weight: bold;
+      margin-top: 15px;
+      text-align: center;
+    }
+    .correct { color: #28a745; }
+    .incorrect { color: var(--accent-color); }
+
+    .stats {
+      font-size: 0.85rem;
+      color: #666;
+      margin-top: 10px;
+      border-top: 1px solid #eee;
+      padding-top: 8px;
+    }
+
+    .hidden { display: none; }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>漢字ドリル 復習アプリ</h1>
+  </header>
+
+  <div class="container">
+    <!-- 設定・選択画面 -->
+    <div id="setup-screen" class="card">
+      <h2>学習設定</h2>
+      <div class="form-group">
+        <label for="print-select">プリント選択</label>
+        <select id="print-select">
+          <option value="6">プリント ⑥</option>
+          <!-- 今後7〜39を追加可能 -->
+        </select>
+      </div>
+
+      <div class="form-group">
+        <label for="mode-select">出題モード</label>
+        <select id="mode-select">
+          <option value="all">すべての問題（全問）</option>
+          <option value="wrong1">間違えた問題（1回以上）</option>
+          <option value="wrong2">繰り返し間違えた問題（2回以上）</option>
+          <option value="all_wrong">全プリントの間違えた問題</option>
+        </select>
+      </div>
+
+      <button class="btn" onclick="startQuiz()">クイズを開始する</button>
+      <button class="btn btn-secondary" onclick="showStatsSummary()">誤答記録の確認・リセット</button>
+    </div>
+
+    <!-- クイズ画面 -->
+    <div id="quiz-screen" class="card hidden">
+      <div>
+        <span id="print-badge" class="badge badge-info">プリント⑥</span>
+        <span id="wrong-count-badge" class="badge badge-warning hidden">ミス: 0回</span>
+      </div>
+      <div id="progress" style="font-size: 0.9rem; color: #666; margin-bottom: 10px;">問題 1 / 10</div>
+      
+      <div id="question" class="question-box"></div>
+
+      <div class="form-group">
+        <input type="text" id="answer-input" placeholder="漢字で答えを入力" autocomplete="off">
+      </div>
+
+      <button id="submit-btn" class="btn" onclick="checkAnswer()">回答する</button>
+      <button id="next-btn" class="btn hidden" onclick="nextQuestion()">次の問題へ</button>
+
+      <div id="result" class="result-msg"></div>
+      <div id="stats-info" class="stats"></div>
+    </div>
+
+    <!-- 結果画面 -->
+    <div id="result-screen" class="card hidden">
+      <h2>お疲れ様でした！</h2>
+      <p id="final-score" style="font-size: 1.2rem; text-align: center;"></p>
+      <button class="btn" onclick="backToSetup()">トップに戻る</button>
+    </div>
+
+    <!-- 記録確認画面 -->
+    <div id="stats-screen" class="card hidden">
+      <h2>間違えた問題の記録</h2>
+      <div id="stats-list" style="max-height: 300px; overflow-y: auto; margin-bottom: 15px;"></div>
+      <button class="btn btn-danger" onclick="resetStats()">すべての間違えた記録をリセット</button>
+      <button class="btn btn-secondary" onclick="backToSetup()">戻る</button>
+    </div>
+  </div>
+
+  <script>
+    // 問題データ (プリント6)
+    const quizData = {
+      "6": [
+        // 大問1
+        { id: "6-1-1", q: "① チェスイ工事が行われる。", a: "治水" },
+        { id: "6-1-2", q: "② 父はヨウシュが好きだと言っても、たしなむ程度だ。", a: "洋酒" },
+        { id: "6-1-3", q: "③ 手続きにはジツインが必要です。", a: "実印" },
+        { id: "6-1-4", q: "④ けがのコウミョウで勝ってしまった。", a: "功名" },
+        { id: "6-1-5", q: "⑤ レッドクリフはジジツをもとにした映画だ。", a: "史実" },
+        { id: "6-1-6", q: "⑥ おじは商売でセイケイを立てている。", a: "生計" },
+        { id: "6-1-7", q: "⑦ 東日本のホウゲンを学ぶ。", a: "方言" },
+        { id: "6-1-8", q: "⑧ パーティーにはレイフクで出席する。", a: "礼服" },
+        { id: "6-1-9", q: "⑨ シュクチョクの警備員がいるはずだ。", a: "宿直" },
+        { id: "6-1-10", q: "⑩ ショヨウのため来週の会議は欠席します。", a: "所用" },
+        { id: "6-1-11", q: "⑪ 植物のセイチョウ記録をつける。", a: "生長" },
+        { id: "6-1-12", q: "⑫ 先制点にチームのシキが上がる。", a: "士気" },
+        { id: "6-1-13", q: "⑬ 伝統芸能にイッカゲン持っている人。", a: "一家言" },
+        { id: "6-1-14", q: "⑭ 近所のショウテンガイに買い物に行く。", a: "商店街" },
+        { id: "6-1-15", q: "⑮ 仕事の途中でショウキュウシする。", a: "小休止" },
+        { id: "6-1-16", q: "⑯ ダイロッカンでそれがそうだとわかった。", a: "第六感" },
+
+        // 大問2
+        { id: "6-2-1", q: "① この大会の優勝候補の□頭にあげられるチームだ。（ヒント：トウ）", a: "筆" },
+        { id: "6-2-2", q: "② □頭では新聞の号外が配られているようだ。（ヒント：トウ）", a: "街" },
+        { id: "6-2-3", q: "③ そんなことをする気は□頭ありませんでした。（ヒント：トウ）", a: "毛" },
+        { id: "6-2-4", q: "④ くれぐれも自分の立場を□頭に置いておくように。（ヒント：トウ）", a: "念" },
+        { id: "6-2-5", q: "⑤ 書面は配らず、□頭で説明することにした。（ヒント：トウ）", a: "口" },
+        { id: "6-2-6", q: "⑥ このまま借金がかさめば、一家は□頭に迷うことになる。（ヒント：トウ）", a: "路" },
+        { id: "6-2-7", q: "⑦ 本当にこいつは話のわからない□頭だな。（ヒント：トウ）", a: "石" },
+        { id: "6-2-8", q: "⑧ この旅館の□頭さんは働き者で有名だ。（ヒント：トウ）", a: "番" },
+        { id: "6-2-9", q: "⑨ 口頭のカラーページにのっている懸賞に応募する。（ヒント：トウ）", a: "巻" },
+        { id: "6-2-10", q: "⑩ 新しい勢力が□頭してきたのはこの頃だ。（ヒント：トウ）", a: "台" },
+        { id: "6-2-11", q: "⑪ 三十キロを過ぎても、□頭集団はかたまったままだ。（ヒント：トウ）", a: "先" },
+        { id: "6-2-12", q: "⑫ 乾杯の□頭は支店長にお願いすることにしました。（ヒント：トウ）", a: "音" },
+        { id: "6-2-13", q: "⑬ その恐慌がおこったのは二十世紀□頭のことだった。（ヒント：トウ）", a: "初" },
+        { id: "6-2-14", q: "⑭ この事件がやつの仕業とわかり、怒り□頭に発する。（ヒント：トウ）", a: "心" },
+
+        // 大問3
+        { id: "6-3-1", q: "① 犯人の□首によって事件は解決した。（ヒント：シュ）", a: "自" },
+        { id: "6-3-2", q: "② 姉は大学を□首で卒業した。（ヒント：シュ）", a: "首" },
+        { id: "6-3-3", q: "③ オーストラリアの□首はキャンベラだ。（ヒント：シュ）", a: "都" },
+        { id: "6-3-4", q: "④ 首口は次の選挙の時期をほのめかした。（ヒント：シュ）", a: "相" },
+        { id: "6-3-5", q: "⑤ イチローは七年連続で首口打者となった。（ヒント：シュ）", a: "位" },
+        { id: "6-3-6", q: "⑥ 容疑者の首実をただした。（ヒント：シュ）", a: "検" },
+        { id: "6-3-7", q: "⑦ 派遣社員の首口に反対する運動がおきている。（ヒント：シュ）", a: "切" },
+        { id: "6-3-8", q: "⑧ ついに相手の首口をおさえることができた。（ヒント：シュ）", a: "根" },
+        { id: "6-3-9", q: "⑨ 辞書を首口きで原稿を読む。（ヒント：シュ）", a: "引" },
+        { id: "6-3-10", q: "⑩ 首の口一枚で予選落ちをまぬがれることができた。（ヒント：シュ）", a: "皮" }
+      ]
+    };
+
+    let currentQuestions = [];
+    let currentIndex = 0;
+    let score = 0;
+
+    // ローカルストレージから誤答データの取得
+    function getWrongStats() {
+      const data = localStorage.getItem('kanji_quiz_wrong_stats');
+      return data ? JSON.parse(data) : {};
+    }
+
+    // 誤答データの保存
+    function saveWrongStats(stats) {
+      localStorage.setItem('kanji_quiz_wrong_stats', JSON.stringify(stats));
+    }
+
+    // 誤答カウントの加算・クリア
+    function updateWrongCount(id, isCorrect) {
+      const stats = getWrongStats();
+      if (!stats[id]) {
+        stats[id] = 0;
+      }
+      if (isCorrect) {
+        // 正解した場合はカウントを1減らす（0未満にはしない）
+        if (stats[id] > 0) stats[id]--;
+      } else {
+        // 不正解の場合は1増やす
+        stats[id]++;
+      }
+      saveWrongStats(stats);
+    }
+
+    function startQuiz() {
+      const printNum = document.getElementById('print-select').value;
+      const mode = document.getElementById('mode-select').value;
+      const stats = getWrongStats();
+
+      let pool = [];
+
+      if (mode === 'all_wrong') {
+        // 全プリントの間違えた問題
+        Object.keys(quizData).forEach(p => {
+          quizData[p].forEach(q => {
+            if (stats[q.id] && stats[q.id] > 0) {
+              pool.push(q);
+            }
+          });
+        });
+      } else {
+        const printQuestions = quizData[printNum] || [];
+        if (mode === 'all') {
+          pool = [...printQuestions];
+        } else if (mode === 'wrong1') {
+          pool = printQuestions.filter(q => stats[q.id] && stats[q.id] >= 1);
+        } else if (mode === 'wrong2') {
+          pool = printQuestions.filter(q => stats[q.id] && stats[q.id] >= 2);
+        }
+      }
+
+      if (pool.length === 0) {
+        alert('該当する問題がありません！');
+        return;
+      }
+
+      currentQuestions = pool;
+      currentIndex = 0;
+      score = 0;
+
+      document.getElementById('setup-screen').classList.add('hidden');
+      document.getElementById('quiz-screen').classList.remove('hidden');
+      
+      showQuestion();
+    }
+
+    function showQuestion() {
+      const q = currentQuestions[currentIndex];
+      const stats = getWrongStats();
+      const wrongCount = stats[q.id] || 0;
+
+      document.getElementById('progress').innerText = `問題 ${currentIndex + 1} / ${currentQuestions.length}`;
+      document.getElementById('question').innerText = q.q;
+      document.getElementById('answer-input').value = '';
+      document.getElementById('answer-input').disabled = false;
+      document.getElementById('result').innerText = '';
+      document.getElementById('stats-info').innerText = '';
+
+      const wrongBadge = document.getElementById('wrong-count-badge');
+      if (wrongCount > 0) {
+        wrongBadge.innerText = `過去のミス: ${wrongCount}回`;
+        wrongBadge.classList.remove('hidden');
+      } else {
+        wrongBadge.classList.add('hidden');
+      }
+
+      document.getElementById('submit-btn').classList.remove('hidden');
+      document.getElementById('next-btn').classList.add('hidden');
+      document.getElementById('answer-input').focus();
+    }
+
+    function checkAnswer() {
+      const userAns = document.getElementById('answer-input').value.trim();
+      const q = currentQuestions[currentIndex];
+      const isCorrect = userAns === q.a;
+
+      updateWrongCount(q.id, isCorrect);
+
+      const resultDiv = document.getElementById('result');
+      if (isCorrect) {
+        resultDiv.innerText = "⭕️ 正解！";
+        resultDiv.className = "result-msg correct";
+        score++;
+      } else {
+        resultDiv.innerText = `❌ 不正解... (正解: ${q.a})`;
+        resultDiv.className = "result-msg incorrect";
+      }
+
+      document.getElementById('answer-input').disabled = true;
+      document.getElementById('submit-btn').classList.add('hidden');
+      document.getElementById('next-btn').classList.remove('hidden');
+    }
+
+    function nextQuestion() {
+      currentIndex++;
+      if (currentIndex < currentQuestions.length) {
+        showQuestion();
+      } else {
+        showResult();
+      }
+    }
+
+    function showResult() {
+      document.getElementById('quiz-screen').classList.add('hidden');
+      document.getElementById('result-screen').classList.remove('hidden');
+      document.getElementById('final-score').innerText = `${currentQuestions.length}問中 ${score}問 正解！`;
+    }
+
+    function backToSetup() {
+      document.getElementById('result-screen').classList.add('hidden');
+      document.getElementById('stats-screen').classList.add('hidden');
+      document.getElementById('setup-screen').classList.remove('hidden');
+    }
+
+    function showStatsSummary() {
+      const stats = getWrongStats();
+      const listDiv = document.getElementById('stats-list');
+      listDiv.innerHTML = '';
+
+      let hasItems = false;
+      Object.keys(quizData).forEach(p => {
+        quizData[p].forEach(q => {
+          if (stats[q.id] && stats[q.id] > 0) {
+            hasItems = true;
+            const item = document.createElement('div');
+            item.style.padding = '8px';
+            item.style.borderBottom = '1px solid #eee';
+            item.innerText = `[プリント${p}] ${q.q} (正解: ${q.a}) - ミス: ${stats[q.id]}回`;
+            listDiv.appendChild(item);
+          }
+        });
+      });
+
+      if (!hasItems) {
+        listDiv.innerHTML = '<p style="color:#666;">間違えた問題の記録はありません。</p>';
+      }
+
+      document.getElementById('setup-screen').classList.add('hidden');
+      document.getElementById('stats-screen').classList.remove('hidden');
+    }
+
+    function resetStats() {
+      if (confirm('すべての間違えた記録をリセットしますか？')) {
+        localStorage.removeItem('kanji_quiz_wrong_stats');
+        showStatsSummary();
+      }
+    }
+  </script>
+</body>
+</html>
