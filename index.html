@@ -126,12 +126,6 @@
       line-height: 1.6;
     }
 
-    .target-word {
-      color: var(--primary);
-      text-decoration: underline;
-      font-weight: bold;
-    }
-
     .feedback {
       text-align: center;
       font-size: 1.2rem;
@@ -166,8 +160,13 @@
       <div class="select-group">
         <label for="print-select">プリントを選択:</label>
         <select id="print-select">
-          <option value="all">すべてのプリント</option>
+          <option value="all">すべてのプリント（ランダム）</option>
           <option value="6">プリント⑥</option>
+          <option value="7">プリント⑦</option>
+          <option value="8">プリント⑧</option>
+          <option value="13">プリント⑬</option>
+          <option value="14">プリント⑭</option>
+          <option value="15">プリント⑮</option>
         </select>
       </div>
 
@@ -220,7 +219,68 @@
       { print: 6, kanji: "政治", yomi: "セイジ", sentence: "【セイジ】に関心を持つ。" },
       { print: 6, kanji: "明治", yomi: "メイジ", sentence: "【メイジ】時代について勉強する。" },
       { print: 6, kanji: "治る", yomi: "ナオル", sentence: "風邪が【ナオル】まで安静にする。" },
-      { print: 6, kanji: "治める", yomi: "オサムル", sentence: "国を【オサムル】。" }
+      { print: 6, kanji: "治める", yomi: "オサムル", sentence: "国を【オサムル】。" },
+
+      // プリント⑦
+      { print: 7, kanji: "頭数", yomi: "アタマカズ", sentence: "試合のできる【アタマカズ】を揃える。" },
+      { print: 7, kanji: "頭取", yomi: "トウドリ", sentence: "銀行が赤字になり【トウドリ】が辞任した。" },
+      { print: 7, kanji: "頭痛", yomi: "ズツウ", sentence: "息子が不登校になり【ズツウ】の種だ。" },
+      { print: 7, kanji: "頭角", yomi: "トウカク", sentence: "めきめき【トウカク】を現してきた若手。" },
+      { print: 7, kanji: "金口", yomi: "キンコウ", sentence: "頭口を十万円支払い、あとは分割払いにした。" },
+      { print: 7, kanji: "首脳", yomi: "シュノウ", sentence: "各国々の【シュノウ】が集まり会談が開かれた。" },
+      { print: 7, kanji: "脳裏", yomi: "ノウリ", sentence: "【ノウリ】に一発もらった時のダメージが大きかった。" },
+      { print: 7, kanji: "洗脳", yomi: "センノウ", sentence: "戦争時は誰もが軍国主義に【センノウ】されていた。" },
+      { print: 7, kanji: "頭目", yomi: "トウモク", sentence: "わが社の【トウモク】集団によって開発された商品。" },
+      { print: 7, kanji: "間髪", yomi: "カンハツ", sentence: "【カンハツ】を入れずに応答する。" },
+      { print: 7, kanji: "後髪", yomi: "ウシロガミ", sentence: "【ウシロガミ】を引かれる思いで去る。" },
+      { print: 7, kanji: "緑髪", yomi: "ミドリガミ", sentence: "つやつやとした黒髪【ミドリガミ】。" },
+
+      // プリント⑧
+      { print: 8, kanji: "頭が高い", yomi: "アタマガタカイ", sentence: "相手に対して威張った態度をとる【アタマガタカイ】。" },
+      { print: 8, kanji: "頭が切れる", yomi: "アタマガキレル", sentence: "考えや判断がすばやい【アタマガキレル】。" },
+      { print: 8, kanji: "頭が堅い", yomi: "アタマガカタイ", sentence: "融通が利かない【アタマガカタイ】。" },
+      { print: 8, kanji: "頭が下がる", yomi: "アタマガサガル", sentence: "感服させられる【アタマガサガル】。" },
+      { print: 8, kanji: "頭に血が上る", yomi: "アタマニチガノボル", sentence: "カッとなって理性を失う【アタマニチガノボル】。" },
+      { print: 8, kanji: "頭が低く", yomi: "アタマガヒキク", sentence: "謙虚で威張らない態度【アタマガヒキク】。" },
+      { print: 8, kanji: "首になる", yomi: "クビニナル", sentence: "職を失う【クビニナル】。" },
+      { print: 8, kanji: "首をつっこむ", yomi: "クビヲツッコム", sentence: "関心を持ってかかわる【クビヲツッコム】。" },
+      { print: 8, kanji: "首がつながる", yomi: "クビガツナガル", sentence: "クビにならずにすむ【クビガツナガル】。" },
+      { print: 8, kanji: "首を横にふる", yomi: "クビヲヨコニフル", sentence: "承諾しない【クビヲヨコニフル】。" },
+      { print: 8, kanji: "神父", yomi: "シンプ", sentence: "【シンプ】がキリストの教えを説く。" },
+      { print: 8, kanji: "投書", yomi: "トウショ", sentence: "新聞の【トウショ】欄に文章が載った。" },
+      { print: 8, kanji: "湖水", yomi: "コスイ", sentence: "【コスイ】に山の形が映っている。" },
+      { print: 8, kanji: "売買", yomi: "バイバイ", sentence: "父は株の【バイバイ】に夢中になっている。" },
+
+      // プリント⑬
+      { print: 13, kanji: "近口", yomi: "チカグチ", sentence: "近くにある入り口【チカグチ】。" },
+      { print: 13, kanji: "間下", yomi: "アイダシタ", sentence: "そんなことに【アイダシタ】をかける余裕はない。" },
+      { print: 13, kanji: "手帳", yomi: "テチョウ", sentence: "【テチョウ】に今月のスケジュールを記入する。" },
+      { print: 13, kanji: "手記", yomi: "シュキ", sentence: "その女性は自分の体験を【シュキ】にまとめた。" },
+      { print: 13, kanji: "手加減", yomi: "テカゲン", sentence: "相手に【テカゲン】をして勝負する。" },
+      { print: 13, kanji: "手料理", yomi: "テリョウリ", sentence: "友達を招いて【テリョウリ】をふるまう。" },
+      { print: 13, kanji: "手土産", yomi: "テミヤゲ", sentence: "得意先を訪問するときは【テミヤゲ】を持っていく。" },
+      { print: 13, kanji: "勝手", yomi: "カッテ", sentence: "自分の【カッテ】ばかり言っていないで協力しよう。" },
+
+      // プリント⑭
+      { print: 14, kanji: "手記", yomi: "シュキ", sentence: "昔の作品を現代風に【シュキ】する。" },
+      { print: 14, kanji: "手助", yomi: "テダスケ", sentence: "人が困っていたら【テダスケ】してあげてください。" },
+      { print: 14, kanji: "手口", yomi: "テグチ", sentence: "悪質な犯行の【テグチ】が明らかになった。" },
+      { print: 14, kanji: "手厚い", yomi: "テアツイ", sentence: "【テアツイ】もてなしを受ける。" },
+      { print: 14, kanji: "手配", yomi: "テハイ", sentence: "旅行の【テハイ】を進める。" },
+      { print: 14, kanji: "腕前", yomi: "ウデマエ", sentence: "料理の【ウデマエ】を披露する。" },
+      { print: 14, kanji: "腕力", yomi: "ワンリョク", sentence: "【ワンリョク】で解決しようとしてはならない。" },
+
+      // プリント⑮
+      { print: 15, kanji: "近道", yomi: "チカミチ", sentence: "【チカミチ】すれば十分で家に着く。" },
+      { print: 15, kanji: "終結", yomi: "シュウケツ", sentence: "長い裁判がようやく【シュウケツ】した。" },
+      { print: 15, kanji: "談話", yomi: "ダンワ", sentence: "首相の【ダンワ】が発表される。" },
+      { print: 15, kanji: "姉妹", yomi: "シマイ", sentence: "パリは京都の【シマイ】都市らしい。" },
+      { print: 15, kanji: "清酒", yomi: "セイシュ", sentence: "【セイシュ】が作られていることでも有名な町。" },
+      { print: 15, kanji: "神社", yomi: "ジンジャ", sentence: "初詣では近所の【ジンジャ】にお参りする。" },
+      { print: 15, kanji: "客室", yomi: "キャクセツ", sentence: "旅館の【キャクセツ】係が案内する。" },
+      { print: 15, kanji: "落葉", yomi: "ラクヨウ", sentence: "イチョウの葉が【ラクヨウ】し始める。" },
+      { print: 15, kanji: "応対", yomi: "オウタイ", sentence: "丁寧な【オウタイ】で接客する。" },
+      { print: 15, kanji: "回収", yomi: "カイシュウ", sentence: "プリントを【カイシュウ】する。" }
     ];
 
     let currentQuestions = [];
@@ -282,7 +342,7 @@
       if (mode === "write") {
         isCorrect = (input === q.kanji);
       } else {
-        // カタカナ・ひらがなの変換ゆらぎを許容
+        // カタカナ・ひらがなの表記揺れを吸収
         const targetYomi = q.yomi.toLowerCase();
         const inputYomi = input.toLowerCase();
         isCorrect = (inputYomi === targetYomi || toHiragana(inputYomi) === toHiragana(targetYomi));
