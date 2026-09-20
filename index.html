@@ -112,17 +112,27 @@
       margin-bottom: 20px;
     }
 
+    .section-title {
+      font-size: 0.95rem;
+      color: #666;
+      background: #eef2f7;
+      padding: 6px 12px;
+      border-radius: 6px;
+      display: inline-block;
+      margin-bottom: 12px;
+    }
+
     .kanji-display {
-      font-size: 2.5rem;
+      font-size: 2.2rem;
       font-weight: bold;
-      letter-spacing: 4px;
-      margin: 16px 0;
+      letter-spacing: 2px;
+      margin: 12px 0;
       color: #2c3e50;
     }
 
     .sentence {
-      font-size: 1.2rem;
-      color: #555;
+      font-size: 1.15rem;
+      color: #333;
       line-height: 1.6;
     }
 
@@ -158,20 +168,53 @@
     <!-- 設定画面 -->
     <div id="setup-screen" class="card">
       <div class="select-group">
-        <label for="print-select">プリントを選択:</label>
-        <select id="print-select">
-          <option value="all">すべてのプリント（ランダム）</option>
-          <option value="6">プリント⑥</option>
-          <option value="7">プリント⑦</option>
-          <option value="8">プリント⑧</option>
-          <option value="13">プリント⑬</option>
-          <option value="14">プリント⑭</option>
-          <option value="15">プリント⑮</option>
+        <label for="section-select">学習する大問を選択:</label>
+        <select id="section-select">
+          <option value="all">★ すべてのプリント（順番通り）</option>
+          
+          <optgroup label="プリント⑥">
+            <option value="6-all">プリント⑥ 全問題</option>
+            <option value="6-1">【大問1】漢字の書き・読み</option>
+          </optgroup>
+
+          <optgroup label="プリント⑦">
+            <option value="7-all">プリント⑦ 全問題</option>
+            <option value="7-1">【大問1】「頭・脳・髪」に関する熟語の書き</option>
+            <option value="7-2">【大問2】熟語の意味と文脈</option>
+          </optgroup>
+
+          <optgroup label="プリント⑧">
+            <option value="8-all">プリント⑧ 全問題</option>
+            <option value="8-1">【大問1】身体部位を含む慣用句の意味</option>
+            <option value="8-2">【大問2】漢字の書き・まとめ</option>
+          </optgroup>
+
+          <optgroup label="プリント⑬">
+            <option value="13-all">プリント⑬ 全問題</option>
+            <option value="13-1">【大問1】「手」に関する語句の書き・選字</option>
+            <option value="13-2">【大問2】「手」を使った熟語・慣用表現</option>
+          </optgroup>
+
+          <optgroup label="プリント⑭">
+            <option value="14-all">プリント⑭ 全問題</option>
+            <option value="14-1">【大問1】「手・腕」に関する慣用句（選択）</option>
+            <option value="14-2">【大問2】文脈に合わせた慣用句</option>
+            <option value="14-3">【大問3】「腕」に関する熟語と慣用表現</option>
+            <option value="14-4">【大問4】ことわざ・慣用表現の穴埋め</option>
+          </optgroup>
+
+          <optgroup label="プリント⑮">
+            <option value="15-all">プリント⑮ 全問題</option>
+            <option value="15-1">【大問1】漢字の書きと熟語の完成</option>
+            <option value="15-2">【大問2】同音・同訓異字の使い分け</option>
+            <option value="15-3">【大問3】文脈に合った漢字選択</option>
+            <option value="15-4">【大問4】漢字の直す（まとめ）</option>
+          </optgroup>
         </select>
       </div>
 
       <div class="select-group">
-        <label for="mode-select">出題モード:</label>
+        <label for="mode-select">出題形式:</label>
         <select id="mode-select">
           <option value="write">書き問題（ひらがな → 漢字）</option>
           <option value="read">読み問題（漢字 → ひらがな）</option>
@@ -189,6 +232,7 @@
       </div>
 
       <div class="question-box">
+        <div id="section-info" class="section-title"></div>
         <div id="question-text" class="sentence"></div>
         <div id="kanji-target" class="kanji-display"></div>
       </div>
@@ -211,102 +255,103 @@
   </div>
 
   <script>
-    // 問題データセット
+    // 問題データセット（順番通り）
     const quizData = [
-      // プリント⑥（修正済）
-      { print: 6, kanji: "治水", yomi: "チスイ", sentence: "大きな川の【チスイ】工事を行う。" },
-      { print: 6, kanji: "統治", yomi: "トウチ", sentence: "国を【トウチ】する仕組みを学ぶ。" },
-      { print: 6, kanji: "政治", yomi: "セイジ", sentence: "【セイジ】に関心を持つ。" },
-      { print: 6, kanji: "明治", yomi: "メイジ", sentence: "【メイジ】時代について勉強する。" },
-      { print: 6, kanji: "治る", yomi: "ナオル", sentence: "風邪が【ナオル】まで安静にする。" },
-      { print: 6, kanji: "治める", yomi: "オサムル", sentence: "国を【オサムル】。" },
+      // プリント⑥
+      { print: 6, section: "6-1", sectionName: "プリント⑥ 【大問1】", kanji: "治水", yomi: "チスイ", sentence: "大きな川の【チスイ】工事を行う。" },
+      { print: 6, section: "6-1", sectionName: "プリント⑥ 【大問1】", kanji: "統治", yomi: "トウチ", sentence: "国を【トウチ】する仕組みを学ぶ。" },
+      { print: 6, section: "6-1", sectionName: "プリント⑥ 【大問1】", kanji: "政治", yomi: "セイジ", sentence: "【セイジ】に関心を持つ。" },
+      { print: 6, section: "6-1", sectionName: "プリント⑥ 【大問1】", kanji: "明治", yomi: "メイジ", sentence: "【メイジ】時代について勉強する。" },
+      { print: 6, section: "6-1", sectionName: "プリント⑥ 【大問1】", kanji: "治る", yomi: "ナオル", sentence: "風邪が【ナオル】まで安静にする。" },
+      { print: 6, section: "6-1", sectionName: "プリント⑥ 【大問1】", kanji: "治める", yomi: "オサムル", sentence: "国を【オサムル】。" },
 
       // プリント⑦
-      { print: 7, kanji: "頭数", yomi: "アタマカズ", sentence: "試合のできる【アタマカズ】を揃える。" },
-      { print: 7, kanji: "頭取", yomi: "トウドリ", sentence: "銀行が赤字になり【トウドリ】が辞任した。" },
-      { print: 7, kanji: "頭痛", yomi: "ズツウ", sentence: "息子が不登校になり【ズツウ】の種だ。" },
-      { print: 7, kanji: "頭角", yomi: "トウカク", sentence: "めきめき【トウカク】を現してきた若手。" },
-      { print: 7, kanji: "金口", yomi: "キンコウ", sentence: "頭口を十万円支払い、あとは分割払いにした。" },
-      { print: 7, kanji: "首脳", yomi: "シュノウ", sentence: "各国々の【シュノウ】が集まり会談が開かれた。" },
-      { print: 7, kanji: "脳裏", yomi: "ノウリ", sentence: "【ノウリ】に一発もらった時のダメージが大きかった。" },
-      { print: 7, kanji: "洗脳", yomi: "センノウ", sentence: "戦争時は誰もが軍国主義に【センノウ】されていた。" },
-      { print: 7, kanji: "頭目", yomi: "トウモク", sentence: "わが社の【トウモク】集団によって開発された商品。" },
-      { print: 7, kanji: "間髪", yomi: "カンハツ", sentence: "【カンハツ】を入れずに応答する。" },
-      { print: 7, kanji: "後髪", yomi: "ウシロガミ", sentence: "【ウシロガミ】を引かれる思いで去る。" },
-      { print: 7, kanji: "緑髪", yomi: "ミドリガミ", sentence: "つやつやとした黒髪【ミドリガミ】。" },
+      { print: 7, section: "7-1", sectionName: "プリント⑦ 【大問1】頭・脳・髪の熟語", kanji: "頭数", yomi: "アタマカズ", sentence: "① 試合のできる【アタマカズ】を揃える。" },
+      { print: 7, section: "7-1", sectionName: "プリント⑦ 【大問1】頭・脳・髪の熟語", kanji: "頭取", yomi: "トウドリ", sentence: "② 銀行の【トウドリ】が辞任した。" },
+      { print: 7, section: "7-1", sectionName: "プリント⑦ 【大問1】頭・脳・髪の熟語", kanji: "頭痛", yomi: "ズツウ", sentence: "③ 【ズツウ】の種が解消される。" },
+      { print: 7, section: "7-1", sectionName: "プリント⑦ 【大問1】頭・脳・髪の熟語", kanji: "頭角", yomi: "トウカク", sentence: "④ めきめき【トウカク】を現してきた。" },
+      { print: 7, section: "7-1", sectionName: "プリント⑦ 【大問1】頭・脳・髪の熟語", kanji: "首脳", yomi: "シュノウ", sentence: "⑤ 各国々の【シュノウ】が集まり会談が開かれた。" },
+      { print: 7, section: "7-1", sectionName: "プリント⑦ 【大問1】頭・脳・髪の熟語", kanji: "脳裏", yomi: "ノウリ", sentence: "⑥ 【ノウリ】に浮かぶ。" },
+      { print: 7, section: "7-1", sectionName: "プリント⑦ 【大問1】頭・脳・髪の熟語", kanji: "洗脳", yomi: "センノウ", sentence: "⑦ 【センノウ】を解く。" },
+      { print: 7, section: "7-1", sectionName: "プリント⑦ 【大問1】頭・脳・髪の熟語", kanji: "頭目", yomi: "トウモク", sentence: "⑧ 集団の【トウモク】。" },
+      { print: 7, section: "7-1", sectionName: "プリント⑦ 【大問1】頭・脳・髪の熟語", kanji: "間髪", yomi: "カンハツ", sentence: "⑨ 【カンハツ】を入れずに応答する。" },
+      { print: 7, section: "7-1", sectionName: "プリント⑦ 【大問1】頭・脳・髪の熟語", kanji: "後髪", yomi: "ウシロガミ", sentence: "⑩ 【ウシロガミ】を引かれる思いで去る。" },
 
       // プリント⑧
-      { print: 8, kanji: "頭が高い", yomi: "アタマガタカイ", sentence: "相手に対して威張った態度をとる【アタマガタカイ】。" },
-      { print: 8, kanji: "頭が切れる", yomi: "アタマガキレル", sentence: "考えや判断がすばやい【アタマガキレル】。" },
-      { print: 8, kanji: "頭が堅い", yomi: "アタマガカタイ", sentence: "融通が利かない【アタマガカタイ】。" },
-      { print: 8, kanji: "頭が下がる", yomi: "アタマガサガル", sentence: "感服させられる【アタマガサガル】。" },
-      { print: 8, kanji: "頭に血が上る", yomi: "アタマニチガノボル", sentence: "カッとなって理性を失う【アタマニチガノボル】。" },
-      { print: 8, kanji: "頭が低く", yomi: "アタマガヒキク", sentence: "謙虚で威張らない態度【アタマガヒキク】。" },
-      { print: 8, kanji: "首になる", yomi: "クビニナル", sentence: "職を失う【クビニナル】。" },
-      { print: 8, kanji: "首をつっこむ", yomi: "クビヲツッコム", sentence: "関心を持ってかかわる【クビヲツッコム】。" },
-      { print: 8, kanji: "首がつながる", yomi: "クビガツナガル", sentence: "クビにならずにすむ【クビガツナガル】。" },
-      { print: 8, kanji: "首を横にふる", yomi: "クビヲヨコニフル", sentence: "承諾しない【クビヲヨコニフル】。" },
-      { print: 8, kanji: "神父", yomi: "シンプ", sentence: "【シンプ】がキリストの教えを説く。" },
-      { print: 8, kanji: "投書", yomi: "トウショ", sentence: "新聞の【トウショ】欄に文章が載った。" },
-      { print: 8, kanji: "湖水", yomi: "コスイ", sentence: "【コスイ】に山の形が映っている。" },
-      { print: 8, kanji: "売買", yomi: "バイバイ", sentence: "父は株の【バイバイ】に夢中になっている。" },
+      { print: 8, section: "8-1", sectionName: "プリント⑧ 【大問1】身体部位の慣用句", kanji: "頭が高い", yomi: "アタマガタカイ", sentence: "① 相手に対して威張った態度をとる → 【アタマガタカイ】" },
+      { print: 8, section: "8-1", sectionName: "プリント⑧ 【大問1】身体部位の慣用句", kanji: "頭が切れる", yomi: "アタマガキレル", sentence: "② 考えや判断がすばやい → 【アタマガキレル】" },
+      { print: 8, section: "8-1", sectionName: "プリント⑧ 【大問1】身体部位の慣用句", kanji: "頭が堅い", yomi: "アタマガカタイ", sentence: "③ 融通が利かない → 【アタマガカタイ】" },
+      { print: 8, section: "8-1", sectionName: "プリント⑧ 【大問1】身体部位の慣用句", kanji: "頭が下がる", yomi: "アタマガサガル", sentence: "④ 感服させられる → 【アタマガサガル】" },
+      { print: 8, section: "8-1", sectionName: "プリント⑧ 【大問1】身体部位の慣用句", kanji: "頭に血が上る", yomi: "アタマニチガノボル", sentence: "⑤ カッとなって理性を失う → 【アタマニチガノボル】" },
+      { print: 8, section: "8-1", sectionName: "プリント⑧ 【大問1】身体部位の慣用句", kanji: "首になる", yomi: "クビニナル", sentence: "⑥ 職を失う → 【クビニナル】" },
+      { print: 8, section: "8-1", sectionName: "プリント⑧ 【大問1】身体部位の慣用句", kanji: "首をつっこむ", yomi: "クビヲツッコム", sentence: "⑦ 関心を持ってかかわる → 【クビヲツッコム】" },
+      { print: 8, section: "8-2", sectionName: "プリント⑧ 【大問2】漢字の書き・まとめ", kanji: "神父", yomi: "シンプ", sentence: "① 【シンプ】がキリストの教えを説く。" },
+      { print: 8, section: "8-2", sectionName: "プリント⑧ 【大問2】漢字の書き・まとめ", kanji: "投書", yomi: "トウショ", sentence: "② 新聞の【トウショ】欄に文章が載った。" },
+      { print: 8, section: "8-2", sectionName: "プリント⑧ 【大問2】漢字の書き・まとめ", kanji: "湖水", yomi: "コスイ", sentence: "③ 【コスイ】に山の形が映っている。" },
+      { print: 8, section: "8-2", sectionName: "プリント⑧ 【大問2】漢字の書き・まとめ", kanji: "売買", yomi: "バイバイ", sentence: "④ 父は株の【バイバイ】に夢中になっている。" },
 
       // プリント⑬
-      { print: 13, kanji: "近口", yomi: "チカグチ", sentence: "近くにある入り口【チカグチ】。" },
-      { print: 13, kanji: "間下", yomi: "アイダシタ", sentence: "そんなことに【アイダシタ】をかける余裕はない。" },
-      { print: 13, kanji: "手帳", yomi: "テチョウ", sentence: "【テチョウ】に今月のスケジュールを記入する。" },
-      { print: 13, kanji: "手記", yomi: "シュキ", sentence: "その女性は自分の体験を【シュキ】にまとめた。" },
-      { print: 13, kanji: "手加減", yomi: "テカゲン", sentence: "相手に【テカゲン】をして勝負する。" },
-      { print: 13, kanji: "手料理", yomi: "テリョウリ", sentence: "友達を招いて【テリョウリ】をふるまう。" },
-      { print: 13, kanji: "手土産", yomi: "テミヤゲ", sentence: "得意先を訪問するときは【テミヤゲ】を持っていく。" },
-      { print: 13, kanji: "勝手", yomi: "カッテ", sentence: "自分の【カッテ】ばかり言っていないで協力しよう。" },
+      { print: 13, section: "13-1", sectionName: "プリント⑬ 【大問1】「手」の語句", kanji: "近口", yomi: "チカグチ", sentence: "① 近くにある入り口 → 【チカグチ】" },
+      { print: 13, section: "13-1", sectionName: "プリント⑬ 【大問1】「手」の語句", kanji: "手帳", yomi: "テチョウ", sentence: "② 【テチョウ】にスケジュールを記入する。" },
+      { print: 13, section: "13-1", sectionName: "プリント⑬ 【大問1】「手」の語句", kanji: "手記", yomi: "シュキ", sentence: "③ 自分の体験を【シュキ】にまとめた。" },
+      { print: 13, section: "13-2", sectionName: "プリント⑬ 【大問2】「手」の熟語・慣用表現", kanji: "手加減", yomi: "テカゲン", sentence: "① 相手に【テカゲン】をして勝負する。" },
+      { print: 13, section: "13-2", sectionName: "プリント⑬ 【大問2】「手」の熟語・慣用表現", kanji: "手料理", yomi: "テリョウリ", sentence: "② 友達を招いて【テリョウリ】をふるまう。" },
+      { print: 13, section: "13-2", sectionName: "プリント⑬ 【大問2】「手」の熟語・慣用表現", kanji: "手土産", yomi: "テミヤゲ", sentence: "③ 得意先を訪問するときは【テミヤゲ】を持っていく。" },
+      { print: 13, section: "13-2", sectionName: "プリント⑬ 【大問2】「手」の熟語・慣用表現", kanji: "勝手", yomi: "カッテ", sentence: "④ 自分の【カッテ】ばかり言っていないで協力しよう。" },
 
       // プリント⑭
-      { print: 14, kanji: "手記", yomi: "シュキ", sentence: "昔の作品を現代風に【シュキ】する。" },
-      { print: 14, kanji: "手助", yomi: "テダスケ", sentence: "人が困っていたら【テダスケ】してあげてください。" },
-      { print: 14, kanji: "手口", yomi: "テグチ", sentence: "悪質な犯行の【テグチ】が明らかになった。" },
-      { print: 14, kanji: "手厚い", yomi: "テアツイ", sentence: "【テアツイ】もてなしを受ける。" },
-      { print: 14, kanji: "手配", yomi: "テハイ", sentence: "旅行の【テハイ】を進める。" },
-      { print: 14, kanji: "腕前", yomi: "ウデマエ", sentence: "料理の【ウデマエ】を披露する。" },
-      { print: 14, kanji: "腕力", yomi: "ワンリョク", sentence: "【ワンリョク】で解決しようとしてはならない。" },
+      { print: 14, section: "14-1", sectionName: "プリント⑭ 【大問1】手・腕の慣用句", kanji: "手を打つ", yomi: "テヲウツ", sentence: "① 早く【テヲウツ】ようにしないと取り返しがつかない。" },
+      { print: 14, section: "14-1", sectionName: "プリント⑭ 【大問1】手・腕の慣用句", kanji: "手を貸す", yomi: "テヲカス", sentence: "② 困っている人に【テヲカス】。" },
+      { print: 14, section: "14-1", sectionName: "プリント⑭ 【大問1】手・腕の慣用句", kanji: "手をぬく", yomi: "テヲヌク", sentence: "③ 仕事を【テヲヌク】ことなく丁寧に行う。" },
+      { print: 14, section: "14-2", sectionName: "プリント⑭ 【大問2】文脈に合わせた慣用句", kanji: "手助け", yomi: "テダスケ", sentence: "① 人が困っていたら【テダスケ】してあげてください。" },
+      { print: 14, section: "14-2", sectionName: "プリント⑭ 【大問2】文脈に合わせた慣用句", kanji: "手口", yomi: "テグチ", sentence: "② 悪質な犯行の【テグチ】が明らかになった。" },
+      { print: 14, section: "14-2", sectionName: "プリント⑭ 【大問2】文脈に合わせた慣用句", kanji: "手厚い", yomi: "テアツイ", sentence: "③ 【テアツイ】もてなしを受ける。" },
+      { print: 14, section: "14-3", sectionName: "プリント⑭ 【大問3】腕の熟語・慣用表現", kanji: "腕前", yomi: "ウデマエ", sentence: "① 料理の【ウデマエ】を披露する。" },
+      { print: 14, section: "14-3", sectionName: "プリント⑭ 【大問3】腕の熟語・慣用表現", kanji: "腕力", yomi: "ワンリョク", sentence: "② 【ワンリョク】で解決しようとしてはならない。" },
+      { print: 14, section: "14-4", sectionName: "プリント⑭ 【大問4】ことわざ・慣用表現の完成", kanji: "濡れ手で粟", yomi: "ヌレテデアワ", sentence: "① 苦労せずに多くの利益を得る → 【ヌレテデアワ】" },
+      { print: 14, section: "14-4", sectionName: "プリント⑭ 【大問4】ことわざ・慣用表現の完成", kanji: "手塩にかける", yomi: "テシオニカケル", sentence: "② 大切に世話をして育てる → 【テシオニカケル】" },
+      { print: 14, section: "14-4", sectionName: "プリント⑭ 【大問4】ことわざ・慣用表現の完成", kanji: "赤子の手をひねる", yomi: "アカゴノテヲヒネル", sentence: "③ とても簡単にできること → 【アカゴノテヲヒネル】" },
 
       // プリント⑮
-      { print: 15, kanji: "近道", yomi: "チカミチ", sentence: "【チカミチ】すれば十分で家に着く。" },
-      { print: 15, kanji: "終結", yomi: "シュウケツ", sentence: "長い裁判がようやく【シュウケツ】した。" },
-      { print: 15, kanji: "談話", yomi: "ダンワ", sentence: "首相の【ダンワ】が発表される。" },
-      { print: 15, kanji: "姉妹", yomi: "シマイ", sentence: "パリは京都の【シマイ】都市らしい。" },
-      { print: 15, kanji: "清酒", yomi: "セイシュ", sentence: "【セイシュ】が作られていることでも有名な町。" },
-      { print: 15, kanji: "神社", yomi: "ジンジャ", sentence: "初詣では近所の【ジンジャ】にお参りする。" },
-      { print: 15, kanji: "客室", yomi: "キャクセツ", sentence: "旅館の【キャクセツ】係が案内する。" },
-      { print: 15, kanji: "落葉", yomi: "ラクヨウ", sentence: "イチョウの葉が【ラクヨウ】し始める。" },
-      { print: 15, kanji: "応対", yomi: "オウタイ", sentence: "丁寧な【オウタイ】で接客する。" },
-      { print: 15, kanji: "回収", yomi: "カイシュウ", sentence: "プリントを【カイシュウ】する。" }
+      { print: 15, section: "15-1", sectionName: "プリント⑮ 【大問1】漢字の書きと熟語の完成", kanji: "近道", yomi: "チカミチ", sentence: "① 【チカミチ】すれば十分で家に着く。" },
+      { print: 15, section: "15-1", sectionName: "プリント⑮ 【大問1】漢字の書きと熟語の完成", kanji: "終結", yomi: "シュウケツ", sentence: "② 長い裁判がようやく【シュウケツ】した。" },
+      { print: 15, section: "15-1", sectionName: "プリント⑮ 【大問1】漢字の書きと熟語の完成", kanji: "談話", yomi: "ダンワ", sentence: "③ 首相の【ダンワ】が発表される。" },
+      { print: 15, section: "15-2", sectionName: "プリント⑮ 【大問2】同音・同訓異字の使い分け", kanji: "姉妹", yomi: "シマイ", sentence: "① パリは京都の【シマイ】都市らしい。" },
+      { print: 15, section: "15-2", sectionName: "プリント⑮ 【大問2】同音・同訓異字の使い分け", kanji: "清酒", yomi: "セイシュ", sentence: "② 【セイシュ】が作られていることでも有名な町。" },
+      { print: 15, section: "15-3", sectionName: "プリント⑮ 【大問3】文脈に合った漢字選択", kanji: "神社", yomi: "ジンジャ", sentence: "① 初詣では近所の【ジンジャ】にお参りする。" },
+      { print: 15, section: "15-3", sectionName: "プリント⑮ 【大問3】文脈に合った漢字選択", kanji: "客室", yomi: "キャクセツ", sentence: "② 旅館の【キャクセツ】係が案内する。" },
+      { print: 15, section: "15-4", sectionName: "プリント⑮ 【大問4】漢字の直す（まとめ）", kanji: "落葉", yomi: "ラクヨウ", sentence: "① イチョウの葉が【ラクヨウ】し始める。" },
+      { print: 15, section: "15-4", sectionName: "プリント⑮ 【大問4】漢字の直す（まとめ）", kanji: "応対", yomi: "オウタイ", sentence: "② 丁寧な【オウタイ】で接客する。" },
+      { print: 15, section: "15-4", sectionName: "プリント⑮ 【大問4】漢字の直す（まとめ）", kanji: "回収", yomi: "カイシュウ", sentence: "③ プリントを【カイシュウ】する。" }
     ];
 
     let currentQuestions = [];
     let currentIndex = 0;
     let score = 0;
-    let mode = "write";
+    let activeMode = "write";
 
     function startQuiz() {
-      const selectedPrint = document.getElementById("print-select").value;
-      mode = document.getElementById("mode-select").value;
+      const selectedVal = document.getElementById("section-select").value;
+      const userMode = document.getElementById("mode-select").value;
 
-      if (selectedPrint === "all") {
+      if (selectedVal === "all") {
         currentQuestions = [...quizData];
+      } else if (selectedVal.endsWith("-all")) {
+        const printNum = selectedVal.split("-")[0];
+        currentQuestions = quizData.filter(q => q.print == printNum);
       } else {
-        currentQuestions = quizData.filter(q => q.print == selectedPrint);
+        currentQuestions = quizData.filter(q => q.section === selectedVal);
       }
 
-      // ランダムに並び替え
-      currentQuestions.sort(() => Math.random() - 0.5);
-
+      // ランダムにせず元の問題順を維持
       currentIndex = 0;
       score = 0;
 
       document.getElementById("setup-screen").classList.add("hidden");
       document.getElementById("quiz-screen").classList.remove("hidden");
       document.getElementById("result-screen").classList.add("hidden");
+
+      activeMode = userMode;
 
       showQuestion();
     }
@@ -315,12 +360,13 @@
       const q = currentQuestions[currentIndex];
       document.getElementById("progress").innerText = `問題 ${currentIndex + 1} / ${currentQuestions.length}`;
       document.getElementById("score-count").innerText = `正解数: ${score}`;
+      document.getElementById("section-info").innerText = q.sectionName || `プリント${q.print}`;
       document.getElementById("feedback").innerText = "";
       document.getElementById("answer-input").value = "";
       document.getElementById("answer-input").disabled = false;
       document.getElementById("next-btn").classList.add("hidden");
 
-      if (mode === "write") {
+      if (activeMode === "write") {
         document.getElementById("question-text").innerHTML = q.sentence;
         document.getElementById("kanji-target").innerText = "";
       } else {
@@ -339,10 +385,9 @@
 
       let isCorrect = false;
 
-      if (mode === "write") {
+      if (activeMode === "write") {
         isCorrect = (input === q.kanji);
       } else {
-        // カタカナ・ひらがなの表記揺れを吸収
         const targetYomi = q.yomi.toLowerCase();
         const inputYomi = input.toLowerCase();
         isCorrect = (inputYomi === targetYomi || toHiragana(inputYomi) === toHiragana(targetYomi));
@@ -355,7 +400,7 @@
         feedback.className = "feedback correct";
         score++;
       } else {
-        const correctAnswer = mode === "write" ? q.kanji : q.yomi;
+        const correctAnswer = activeMode === "write" ? q.kanji : q.yomi;
         feedback.innerText = `❌ 残念！ 正解は「${correctAnswer}」`;
         feedback.className = "feedback incorrect";
       }
